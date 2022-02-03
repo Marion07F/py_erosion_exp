@@ -16,7 +16,7 @@ import tools.m3c2 as m3c2_tools
 logger = logging.getLogger(__name__)
 
 cc_dgm = ccConfig.cc_dgm
-cc_ple = ccConfig.cc_ple
+cc_dgm = ccConfig.cc_dgm
 
 subMethods = {0: None, 1: 'RANDOM', 2: 'SPATIAL', 3: 'OCTREE'}
 
@@ -113,7 +113,7 @@ def q3dmasc(pc, training_file, shift, core=None, silent=True, debug=False):
     else:
         args += f' -3DMASC_CLASSIFY -ONLY_FEATURES {training_file} "PC1=1"'
     print(f'cc {args}')
-    ple.exe(cc_ple + args, debug=debug)
+    ple.exe(cc_dgm + args, debug=debug)
     return root + '_WITH_FEATURES.sbf'
 
 def density(pc, shift, radius, densityType, silent=True, debug=False):
@@ -128,7 +128,7 @@ def density(pc, shift, radius, densityType, silent=True, debug=False):
     # densityType can be KNN SURFACE VOLUME
     args += f' -DENSITY {radius} -TYPE {densityType}'
     print(f'cc {args}')
-    ple.exe(cc_ple + args, debug=debug)
+    ple.exe(cc_dgm + args, debug=debug)
     return root + '_DENSITY.sbf'
 
 ################
@@ -144,7 +144,7 @@ def best_fit_plane(cloud, debug=False):
     args += ' -o ' + cloud
     args += ' -BEST_FIT_PLANE '
     
-    ple.exe(cc_ple + args, debug=debug)
+    ple.exe(cc_dgm + args, debug=debug)
     
     outputs = (os.path.splitext(cloud)[0] + '_BEST_FIT_PLANE.bin',
                os.path.splitext(cloud)[0] + '_BEST_FIT_PLANE_INFO.txt')
@@ -174,7 +174,7 @@ def m3c2(pc1, pc2, params, core=None, silent=True, fmt='ASC', debug=False):
     if core is not None:
         args += ' -o -GLOBAL_SHIFT FIRST ' + core
     args += ' -M3C2 ' + params
-    cmd = cc_ple + args
+    cmd = cc_dgm + args
     if debug is True:
         logging.info(cmd)
     ret = ple.exe(cmd, debug=debug)
@@ -200,7 +200,7 @@ def drop_global_shift(cloud, silent=True):
         args +=' -NO_TIMESTAMP'
     args +=' -o ' + cloud
     args +=' -DROP_GLOBAL_SHIFT -SAVE_CLOUDS'
-    ret = ple.exe(cc_ple + args)
+    ret = ple.exe(cc_dgm + args)
     if ret == EXIT_FAILURE:
         raise CloudCompareError
     return ret
@@ -213,7 +213,7 @@ def remove_scalar_fields(cloud, silent=True):
         args +=' -NO_TIMESTAMP'
     args +=' -o ' + cloud
     args +=' -REMOVE_ALL_SFS -SAVE_CLOUDS'
-    ple.exe(cc_ple + args)
+    ple.exe(cc_dgm + args)
 
 def rasterize(cloud, spacing, ext='_RASTER', debug=False, proj='AVG'):
     cloud_exists(cloud)
@@ -223,7 +223,7 @@ def rasterize(cloud, spacing, ext='_RASTER', debug=False, proj='AVG'):
     args += ' -o ' + cloud
     args += ' -RASTERIZE -GRID_STEP ' + str(spacing)
     args += ' -PROJ ' + proj
-    ple.exe(cc_ple + args, debug=debug)
+    ple.exe(cc_dgm + args, debug=debug)
     
     return os.path.splitext(cloud)[0] + ext + '.bin'
     
@@ -294,7 +294,7 @@ def to_sbf(fullname, debug=False):
         args += ' -C_EXPORT_FMT SBF'
         args += ' -o ' + fullname
         args += ' -SAVE_CLOUDS'
-        ple.exe(cc_ple + args, debug=debug)
+        ple.exe(cc_dgm + args, debug=debug)
         return os.path.splitext(fullname)[0] + '.sbf'
     else:
         print(f'error, {fullname} does not exist')
@@ -334,7 +334,7 @@ def all_to_bin(dir_, shift, debug=False):
 ## SUBSAMPLING
 ##############
 
-def ss(fullname, cc=cc_ple, algorithm='OCTREE', parameter=8, debug=False, odir=None, fmt='SBF'):
+def ss(fullname, cc=cc_dgm, algorithm='OCTREE', parameter=8, debug=False, odir=None, fmt='SBF'):
     root, ext = os.path.splitext(fullname)
     
     if fmt == 'SBF':
@@ -399,7 +399,7 @@ def apply_trans_alt(cloudfile, transfile):
     args += ' -SILENT -NO_TIMESTAMP'
     args += ' -o ' + cloudfile
     args += ' -APPLY_TRANS ' + transfile
-    ret = ple.exe(cc_ple + args)
+    ret = ple.exe(cc_dgm + args)
     if ret == EXIT_FAILURE:
         raise CloudCompareError
     root, ext = os.path.splitext(cloudfile)
@@ -435,7 +435,7 @@ def apply_trans(cloudfile, transfile, outfile=None, silent=True, debug=False, sh
     args += ' -SAVE_CLOUDS FILE ' + outfile
     if debug is True:
         print(f'cc {args}')
-    ret = ple.exe(cc_ple + args)
+    ret = ple.exe(cc_dgm + args)
     if ret == EXIT_FAILURE:
         raise CloudCompareError
     logger.setLevel(level)
@@ -633,7 +633,7 @@ def c2c_dist(compared, reference, maxDist, odir=None, silent=True, debug=False):
     args += ' -c2c_dist'
     args += f' -FILTER_SF 0. {maxDist:.3f}'
 
-    ple.exe(cc_ple + args, debug=debug)
+    ple.exe(cc_dgm + args, debug=debug)
 
     root, ext = os.path.splitext(compared)
     output = root + '_C2C_DIST.sbf'
@@ -669,7 +669,7 @@ def closest_point_set(compared, reference, silent=True, debug = False):
     compBase = os.path.splitext(os.path.split(compared)[1])[0]
     refBase = os.path.splitext(os.path.split(reference)[1])[0]
 
-    ple.exe(cc_ple + args, debug=debug)
+    ple.exe(cc_dgm + args, debug=debug)
     
     return os.path.join(compHead, f'[{refBase}]_CPSet({compBase}).sbf')
 
@@ -710,7 +710,7 @@ def icp(compared, reference,
         args += f' -ITER {iter_}'
 
     print(f'cc {args}')
-    ple.exe(cc_ple + args, debug=debug)
+    ple.exe(cc_dgm + args, debug=debug)
     
     out = os.path.join(os.getcwd(), 'registration_trace_log.csv')
     return out

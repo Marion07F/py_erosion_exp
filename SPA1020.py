@@ -14,7 +14,7 @@ import matplotlib
 import tools.cc as cc
 
 # parameters
-dir_ = 'C:/DATA/lgu/processing'
+dir_ = 'C:/DATA/lgu/TMP'
 bin_ = 'SPA1020.bin'
 m3c2_params = os.path.join(dir_, 'm3c2_outCore.txt') # M3C2 parameters
 rasterSpacing = 0.0005 # spacing for the core points generation
@@ -41,7 +41,7 @@ print(f'figures directory: {figDir}')
 src = cloud
 dst = os.path.join(odir, tail)
 shutil.copy(src, dst)
-cc.to_sbf(dst)
+ret = cc.to_sbf(dst, debug=True)
 os.remove(dst)
 
 # get the list of SBF files
@@ -103,7 +103,7 @@ for idx in range(N-1):
 XY = []
 C = []
 for idx in range(N-1):
-    pc, sf, config = cc.read_sbf(results[idx])
+    pc, sf, config = cc.read_sbf(results[idx], verbose=True)
     # x and y coordinates will be used to place the points on the scatter plot
     xy = pc[:, 0:2]
     xy[:, 0] = xy[:, 0] - np.mean(xy[:, 0])  # remove mean x
