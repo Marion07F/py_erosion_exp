@@ -9,7 +9,7 @@ import logging, os
 
 import numpy as np
 
-import tools.cc
+import tools.cc as cc
 
 logger = logging.getLogger(__name__)
 
