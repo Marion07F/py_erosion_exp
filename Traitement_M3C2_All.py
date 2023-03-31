@@ -53,7 +53,7 @@ with open(fileVminVmax) as f:
 datasVminVmax = json.loads(datasVminVmaxString)
 
 for idx in range(len(nomManip)):#len(nomManip)
-    ManipList.append(os.path.join(dirDATA + '/' + nomManip[idx]) + '/' + f'm3c2{DOSSIER_M3C2}')
+    ManipList.append(os.path.join(dirDATA, nomManip[idx], f'm3c2{DOSSIER_M3C2}'))
     
     SaveList.append(os.path.join(dirPROCESSING + '/' + nomManip[idx]) + '/' + f'm3c2{DOSSIER_M3C2}')
     if not os.path.exists(os.path.join(dirPROCESSING + '/' + nomManip[idx]) + '/' + f'm3c2{DOSSIER_M3C2}'):
